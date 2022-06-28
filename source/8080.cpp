@@ -21,10 +21,6 @@ void VM_8080::notImplemented(unsigned char op) {
 }
 
 void VM_8080::initOps() {   // Lambda expressions <3
-    for (int i = 0x0; i < 0xFF; i++) {
-        opMap[i] = [this](int i, int j, int k) { notImplemented(i); };
-    }
-
     opMap[0x00] = [this](int i, int j, int k) { return; };
     opMap[0x01] = [this](int i, int j, int k) { cpu.C = j; cpu.B = k; cpu.pc += 2;};
 
