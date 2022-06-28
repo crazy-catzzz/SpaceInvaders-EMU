@@ -21,6 +21,9 @@ void VM_8080::notImplemented(unsigned char op) {
 }
 
 void VM_8080::initOps() {   // Lambda expressions <3
+
+    // I have to implement like 255 opcodes  k i l l  m e
+
     opMap[0x00] = [this](int i, int j, int k) { return; };
     opMap[0x01] = [this](int i, int j, int k) { cpu.C = j; cpu.B = k; cpu.pc += 2;};
 

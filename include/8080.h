@@ -32,12 +32,12 @@ class VM_8080 {
 public:
     VM_8080();
 
-    cpu_8080 cpu;
-    alu_8080 alu;
+    cpu_8080 cpu;           // 8080 CPU
+    alu_8080 alu;           // 8080 ALU
 
-    unsigned char* memory;
+    unsigned char* memory;  // Mem array
 
-    std::map<int, std::function<void(const int, const int, const int)>> opMap;
+    std::map<int, std::function<void(const int, const int, const int)>> opMap;  // Opcode map
 
     int mainCPUloop();
 
