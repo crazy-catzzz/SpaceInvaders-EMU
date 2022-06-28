@@ -30,20 +30,27 @@ void VM_8080::initOps() {   // Lambda expressions <3
         opMap[i] = [this](int i, int j, int k) { notImplemented(i); };
     }
 
+    // Line 0
     opMap[0x00] = [this](int i, int j, int k) { return; };                                      // NOP
     opMap[0x01] = [this](int i, int j, int k) { cpu.C = j; cpu.B = k; cpu.pc += 2;};            // LXI B,d16
     opMap[0x02] = [this](int i, int j, int k) { memory[cpu.C << 8 | cpu.B] = cpu.A; };          // STAX B
     opMap[0x03] = [this](int i, int j, int k) { notImplemented(i); };                           // INX B
     opMap[0x04] = [this](int i, int j, int k) { cpu.B++; };                                     // INR B
     opMap[0x05] = [this](int i, int j, int k) { cpu.B--; };                                     // DCR B
-    opMap[0x06] = [this](int i, int j, int k) { cpu.B = j; cpu.pc += 1; };                                   // MVI B,d8
+    opMap[0x06] = [this](int i, int j, int k) { cpu.B = j; cpu.pc++; };                         // MVI B,d8
     opMap[0x07] = [this](int i, int j, int k) { notImplemented(i); };                           // RLC
     opMap[0x08] = [this](int i, int j, int k) { return; };                                      // NOP (ILLEGAL)
     opMap[0x09] = [this](int i, int j, int k) { cpu.H += (cpu.B * 2); cpu.L += (cpu.C * 2);};   // DAD B
     opMap[0x0A] = [this](int i, int j, int k) { cpu.A = memory[cpu.C << 8 | cpu.B]; };          // LDAX B
     opMap[0x0B] = [this](int i, int j, int k) { notImplemented(i); };                           // DCX B
-    
+    opMap[0x0C] = [this](int i, int j, int k) { cpu.C++; };                                     // INR C
+    opMap[0x0D] = [this](int i, int j, int k) { cpu.C--; };                                     // DCR C
+    opMap[0x0E] = [this](int i, int j, int k) { cpu.C = j; cpu.pc++; };                         // MVI C,d8
+    opMap[0x0F] = [this](int i, int j, int k) { notImplemented(i); };                           // RRC
 
+    // Line 1
+
+    // Line 4
     opMap[0x41] = [this](int i, int j, int k) { cpu.B = cpu.C; };
     opMap[0x42] = [this](int i, int j, int k) { cpu.B = cpu.D; };
     opMap[0x43] = [this](int i, int j, int k) { cpu.B = cpu.E; };
