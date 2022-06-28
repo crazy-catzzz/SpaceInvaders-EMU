@@ -12,8 +12,7 @@ struct cpu_8080 {
     unsigned char H;    // 8-bit reg
     unsigned char L;    // 8-bit reg
 
-    unsigned char W;    // 8-bit temp reg
-    unsigned char Z;    // 8-bit temp reg
+    unsigned char A;    // 8-bit (temp?) reg
 
     unsigned short pc;  // Program Counter (16-bit reg)
     unsigned short sp;  // Stack Pointer (16-bit reg)
