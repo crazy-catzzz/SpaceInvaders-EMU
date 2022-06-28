@@ -42,6 +42,7 @@ void VM_8080::initOps() {   // Lambda expressions <3
     opMap[0x09] = [this](int i, int j, int k) { cpu.H += (cpu.B * 2); cpu.L += (cpu.C * 2);};   // DAD B
     opMap[0x0A] = [this](int i, int j, int k) { cpu.A = memory[cpu.C << 8 | cpu.B]; };          // LDAX B
     opMap[0x0B] = [this](int i, int j, int k) { notImplemented(i); };                           // DCX B
+    
 
     opMap[0x41] = [this](int i, int j, int k) { cpu.B = cpu.C; };
     opMap[0x42] = [this](int i, int j, int k) { cpu.B = cpu.D; };
