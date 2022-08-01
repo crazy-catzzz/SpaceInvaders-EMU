@@ -1,6 +1,5 @@
 # Library stuff
-RAYLIB_SRC_PATH := ~/raylib/src# REPLACE WITH YOUR RAYLIB PATH
-LDFLAGS 		:= -L$(RAYLIB_SRC_PATH) -lm -lraylib -pthread #-lopengl32 -lgdi32 -lwinmm -mwindows
+LDFLAGS 		:= 
 
 # ooga booga variables
 TARGET_NAME	:= SpaceInvaders-EMU
