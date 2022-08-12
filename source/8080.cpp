@@ -34,7 +34,7 @@ void VM_8080::initOps() {   // Lambda expressions <3
     opMap[0x00] = [this](int i, int j, int k) { return; };                                      // NOP
     opMap[0x01] = [this](int i, int j, int k) { cpu.C = j; cpu.B = k; cpu.pc += 2;};            // LXI B,d16
     opMap[0x02] = [this](int i, int j, int k) { memory[cpu.C << 8 | cpu.B] = cpu.A; };          // STAX B
-    opMap[0x03] = [this](int i, int j, int k) { notImplemented(i); };                           // INX B
+    opMap[0x03] = [this](int i, int j, int k) { memory[cpu.C << 8 | cpu.B]++; };                // INX B
     opMap[0x04] = [this](int i, int j, int k) { cpu.B++; };                                     // INR B
     opMap[0x05] = [this](int i, int j, int k) { cpu.B--; };                                     // DCR B
     opMap[0x06] = [this](int i, int j, int k) { cpu.B = j; cpu.pc++; };                         // MVI B,d8
@@ -49,6 +49,7 @@ void VM_8080::initOps() {   // Lambda expressions <3
     opMap[0x0F] = [this](int i, int j, int k) { notImplemented(i); };                           // RRC
 
     // Line 1
+
 
     // Line 4
     opMap[0x41] = [this](int i, int j, int k) { cpu.B = cpu.C; };
