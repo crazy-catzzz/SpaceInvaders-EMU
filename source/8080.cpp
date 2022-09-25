@@ -47,7 +47,7 @@ void VM_8080::initOps() {   // Lambda expressions <3
     opMap[0x0D] = [this](int i, int j, int k) { cpu.C--; };                                     // DCR C
     opMap[0x0E] = [this](int i, int j, int k) { cpu.C = j; cpu.pc++; };                         // MVI C,d8
     opMap[0x0F] = [this](int i, int j, int k) { 
-        unsigned char x;
+        unsigned char x = cpu.A;
         cpu.A = ((x & 1) << 7) | (x >> 1); 
         alu.CY = (1 == (x&1));
     };                                                                                          // RRC
