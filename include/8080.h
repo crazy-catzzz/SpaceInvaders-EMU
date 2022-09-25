@@ -22,7 +22,9 @@ struct alu_8080 {
     unsigned char acc;  // 8-bit accumulator
     unsigned char act;  // 8-bit temp accumulator
 
-    unsigned char F;    // 5-bit Flag Register (zero, carry, sign, parity, aux carry)
+    unsigned char F;    // 5-bit Flag Register (sign, parity, aux carry)
+    unsigned char CY;   // 5-bit Carry Flag
+    unsigned char Z;    // 5-bit Zero Flag
 
     unsigned char tmp;  // 8-bit temp reg
 };
