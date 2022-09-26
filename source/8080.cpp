@@ -103,10 +103,7 @@ void VM_8080::initOps() {   // Lambda expressions <3
         cpu.A = memory[offset];
         cpu.pc += 2;
     };                                                                                           // LDA d16
-    opMap[0x3E] = [this](int i, int j, int k) {
-        cpu.A = j;
-        cpu.pc++;
-    };
+    opMap[0x3E] = [this](int i, int j, int k) { cpu.A = j; cpu.pc++; };                          // MVI A,d8
 
     // Line 4
     opMap[0x41] = [this](int i, int j, int k) { cpu.B = cpu.C; };
