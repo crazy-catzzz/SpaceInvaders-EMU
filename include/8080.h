@@ -41,6 +41,7 @@ public:
     std::map<int, std::function<void(const int, const int, const int)>> opMap;  // Opcode map
 
     int mainCPUloop();
+    int disassembleOp(unsigned short op);
 
 private:
     bool on;

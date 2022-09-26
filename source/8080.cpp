@@ -14,8 +14,9 @@ VM_8080::VM_8080() {
 
 int VM_8080::mainCPUloop() {
     while (on == true) {
-        opMap[memory[cpu.pc]](memory[cpu.pc], memory[cpu.pc + 1], memory[cpu.pc + 2]);
-        cpu.pc++;
+        //opMap[memory[cpu.pc]](memory[cpu.pc], memory[cpu.pc + 1], memory[cpu.pc + 2]);
+        //cpu.pc++;
+        cpu.pc += disassembleOp(memory[cpu.pc]);
     }
     return 0;
 }
@@ -109,4 +110,22 @@ void VM_8080::initOps() {   // Lambda expressions <3
     opMap[0x41] = [this](int i, int j, int k) { cpu.B = cpu.C; };
     opMap[0x42] = [this](int i, int j, int k) { cpu.B = cpu.D; };
     opMap[0x43] = [this](int i, int j, int k) { cpu.B = cpu.E; };
+}
+
+int VM_8080::disassembleOp(unsigned short op) {
+    switch(op) {
+        case 0x00: std::cout << "NOP" << std::endl; break;
+        case 0x01: std::cout << "LXI" << std::endl; break;
+        case 0x02: std::cout << "STAX" << std::endl; break;
+        case 0x03: std::cout << "INX" << std::endl; break;
+        case 0x04: std::cout << "INR" << std::endl; break;
+        case 0x05: std::cout << "DCR" << std::endl; break;
+        case 0x06: std::cout << "MVI" << std::endl; break;
+        case 0x07: std::cout << "RLC" << std::endl; break;
+        case 0x08: std::cout << "NOP" << std::endl; break;
+        case 0x3E: std::cout << "MVI" << std::endl; break;
+        case 0xC3: std::cout << "JMP" << std::endl; break;
+        default: std::cout << "Not implemented in disassembler or not an instruction." << std::endl; break;
+    }
+    return 1;
 }
