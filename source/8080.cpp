@@ -1,6 +1,8 @@
 #include "../include/8080.h"
 
 #include <iostream>
+#include <stdlib.h>
+#include <stdint.h>
 
 VM_8080::VM_8080() {
     on = true;
@@ -41,9 +43,9 @@ void VM_8080::initOps() {   // Lambda expressions <3
     opMap[0x07] = [this](int i, int j, int k) { notImplemented(i); };                           // RLC
     opMap[0x08] = [this](int i, int j, int k) { return; };                                      // NOP (ILLEGAL)
     opMap[0x09] = [this](int i, int j, int k) { 
-        unsigned short HLpair = (cpu.H << 8 | cpu.L);
-        unsigned short BCpair = (cpu.B << 8 | cpu.C);
-        unsigned short result = HLpair + BCpair;
+        uint32_t HLpair = (cpu.H << 8 | cpu.L);
+        uint32_t BCpair = (cpu.B << 8 | cpu.C);
+        uint32_t result = HLpair + BCpair;
         cpu.H = (result & 0xFF00) >> 8;
         cpu.L = (result & 0x00FF);
         alu.CY = ((result & 0xFFFF0000) != 0);
@@ -63,9 +65,9 @@ void VM_8080::initOps() {   // Lambda expressions <3
     opMap[0x11] = [this](int i, int j, int k) { cpu.E = j; cpu.D = k; cpu.pc += 2; };           // LXI D,d16
     opMap[0x13] = [this](int i, int j, int k) { cpu.E++; if (cpu.E == 0) cpu.D++; };            // INX D
     opMap[0x19] = [this](int i, int j, int k) { 
-        unsigned short HLpair = (cpu.H << 8 | cpu.L);
-        unsigned short DEpair = (cpu.D << 8 | cpu.E);
-        unsigned short result = HLpair + DEpair;
+        uint32_t HLpair = (cpu.H << 8 | cpu.L);
+        uint32_t DEpair = (cpu.D << 8 | cpu.E);
+        uint32_t result = HLpair + DEpair;
         cpu.H = (result & 0xFF00) >> 8;
         cpu.L = (result & 0x00FF);
         alu.CY = ((result & 0xFFFF0000) != 0);
@@ -77,12 +79,34 @@ void VM_8080::initOps() {   // Lambda expressions <3
     opMap[0x23] = [this](int i, int j, int k) { cpu.L++; if (cpu.L == 0) cpu.H++; };             // INX H
     opMap[0x26] = [this](int i, int j, int k) { cpu.H = j; cpu.pc++; };                          // MVI H,d8
     opMap[0x29] = [this](int i, int j, int k) {
-        unsigned short HLpair = (cpu.H << 8 | cpu.L);
-        unsigned short result = HLpair + HLpair;
+        uint32_t HLpair = (cpu.H << 8 | cpu.L);
+        uint32_t result = HLpair + HLpair;
         cpu.H = (result & 0xFF00) >> 8;
         cpu.L = (result & 0x00FF);
         alu.CY = ((result & 0xFFFF0000) != 0);
     };                                                                                           // DAD H
+
+    // Line 3
+    opMap[0x31] = [this](int i, int j, int k) { cpu.sp = (k << 8) | j; cpu.pc += 2; };           // LXI SP,d16
+    opMap[0x32] = [this](int i, int j, int k) {
+        unsigned short offset = (k << 8) | j;
+        memory[offset] = cpu.A;
+        cpu.pc += 2;
+    };                                                                                           // STA d16
+    opMap[0x36] = [this](int i, int j, int k) {
+        unsigned short offset = (cpu.H << 8) | cpu.L;
+        memory[offset] = j;
+        cpu.pc++;
+    };                                                                                           // MVI mem,d8
+    opMap[0x3A] = [this](int i, int j, int k) {
+        unsigned short offset = (k << 8) | j;
+        cpu.A = memory[offset];
+        cpu.pc += 2;
+    };                                                                                           // LDA d16
+    opMap[0x3E] = [this](int i, int j, int k) {
+        cpu.A = j;
+        cpu.pc++;
+    };
 
     // Line 4
     opMap[0x41] = [this](int i, int j, int k) { cpu.B = cpu.C; };
