@@ -55,6 +55,15 @@ void VM_8080::initOps() {   // Lambda expressions <3
     // Line 1
     opMap[0x11] = [this](int i, int j, int k) { cpu.E = j; cpu.D = k; cpu.pc += 2; };           // LXI D,d16
     opMap[0x13] = [this](int i, int j, int k) { cpu.E++; if (cpu.E == 0) cpu.D++; };            // INX D
+    opMap[0x19] = [this](int i, int j, int k) { 
+        unsigned short HLpair = (cpu.H << 8 | cpu.L);
+        unsigned short DEpair = (cpu.D << 8 | cpu.E);
+        unsigned short result = HLpair + DEpair;
+        cpu.H = (result & 0xFF00) >> 8;
+        cpu.L = (result & 0x00FF);
+        alu.CY = ((result & 0xFFFF0000) != 0);
+    };                                                                                           // DAD D
+    opMap[0x1A] = [this](int i, int j, int k) { cpu.A = (cpu.D << 8 | cpu.E); };                 // LDAX D
 
     // Line 4
     opMap[0x41] = [this](int i, int j, int k) { cpu.B = cpu.C; };
