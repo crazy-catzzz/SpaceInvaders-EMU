@@ -32,7 +32,7 @@ void VM_8080::initOps() {   // Lambda expressions <3
 
     // Line 0
     opMap[0x00] = [this](int i, int j, int k) { return; };                                      // NOP
-    opMap[0x01] = [this](int i, int j, int k) { cpu.C = j; cpu.B = k; cpu.pc += 2;};            // LXI B,d16
+    opMap[0x01] = [this](int i, int j, int k) { cpu.C = j; cpu.B = k; cpu.pc += 2; };           // LXI B,d16
     opMap[0x02] = [this](int i, int j, int k) { memory[cpu.C << 8 | cpu.B] = cpu.A; };          // STAX B
     opMap[0x03] = [this](int i, int j, int k) { cpu.C++; if (cpu.C == 0) cpu.B++; };            // INX B
     opMap[0x04] = [this](int i, int j, int k) { cpu.B++; };                                     // INR B
@@ -40,7 +40,14 @@ void VM_8080::initOps() {   // Lambda expressions <3
     opMap[0x06] = [this](int i, int j, int k) { cpu.B = j; cpu.pc++; };                         // MVI B,d8
     opMap[0x07] = [this](int i, int j, int k) { notImplemented(i); };                           // RLC
     opMap[0x08] = [this](int i, int j, int k) { return; };                                      // NOP (ILLEGAL)
-    opMap[0x09] = [this](int i, int j, int k) { cpu.H += (cpu.B * 2); cpu.L += (cpu.C * 2);};   // DAD B
+    opMap[0x09] = [this](int i, int j, int k) { 
+        unsigned short HLpair = (cpu.H << 8 | cpu.L);
+        unsigned short BCpair = (cpu.B << 8 | cpu.C);
+        unsigned short result = HLpair + BCpair;
+        cpu.H = (result & 0xFF00) >> 8;
+        cpu.L = (result & 0x00FF);
+        alu.CY = ((result & 0xFFFF0000) != 0);
+    };                                                                                          // DAD B
     opMap[0x0A] = [this](int i, int j, int k) { cpu.A = memory[cpu.C << 8 | cpu.B]; };          // LDAX B
     opMap[0x0B] = [this](int i, int j, int k) { notImplemented(i); };                           // DCX B
     opMap[0x0C] = [this](int i, int j, int k) { cpu.C++; };                                     // INR C
@@ -64,6 +71,18 @@ void VM_8080::initOps() {   // Lambda expressions <3
         alu.CY = ((result & 0xFFFF0000) != 0);
     };                                                                                           // DAD D
     opMap[0x1A] = [this](int i, int j, int k) { cpu.A = (cpu.D << 8 | cpu.E); };                 // LDAX D
+
+    // Line 2
+    opMap[0x21] = [this](int i, int j, int k) { cpu.L = j; cpu.H = k; cpu.pc += 2; };            // LXI H,d16
+    opMap[0x23] = [this](int i, int j, int k) { cpu.L++; if (cpu.L == 0) cpu.H++; };             // INX H
+    opMap[0x26] = [this](int i, int j, int k) { cpu.H = j; cpu.pc++; };                          // MVI H,d8
+    opMap[0x29] = [this](int i, int j, int k) {
+        unsigned short HLpair = (cpu.H << 8 | cpu.L);
+        unsigned short result = HLpair + HLpair;
+        cpu.H = (result & 0xFF00) >> 8;
+        cpu.L = (result & 0x00FF);
+        alu.CY = ((result & 0xFFFF0000) != 0);
+    };                                                                                           // DAD H
 
     // Line 4
     opMap[0x41] = [this](int i, int j, int k) { cpu.B = cpu.C; };
